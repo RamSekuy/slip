@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Employee {
+  id              String              @id @default(uuid())
+  name            String
+  email           String              @unique
+  role            Role
+  lastEducation   String
+  updatedAt       DateTime            @updatedAt
+  createdAt       DateTime            @default(now())
+  defaultSalaryId String              @unique
+  defaultSalary   SalarySlip          @relation("DefaultSalary", fields: [defaultSalaryId], references: [id])
+  slips           SalarySlipReport[]
+}
+
+model SalarySlip {
+  id              String              @id @default(uuid())
+  report          SalarySlipReport?
+  defaultFor       Employee?           @relation("DefaultSalary")
+  updatedAt       DateTime            @updatedAt
+  createdAt       DateTime            @default(now())
+  
+  gajiPokok Int @default(0)
+  masaKerja Int @default(0)
+  tunjanganJabatan Int @default(0)
+  tunjanganfungsional Int @default(0)
+  waliKelas Int @default(0)
+  kurikulum Int @default(0)
+  kesiswaan Int @default(0)
+  bendahara Int @default(0)
+  operasionalSD Int @default(0)
+  operasionalSMP Int @default(0)
+  operasionalSMA Int @default(0)
+  media Int @default(0)
+  tunjanganKesehatan Int @default(0)
+  kehadiran Int @default(0)
+  kbmTahfidz Int @default(0)
+  kbmFormal Int @default(0)
+  inval Int @default(0)
+  gTerbang Int @default(0)
+  tunjanganMakan Int @default(0)
+  tunjanganTinggal Int @default(0)
+  seragam Int @default(15000)
+  sedekah Int @default(0)
+  kasbon Int @default(0)
+  denda Int @default(0)
+}
+
+model SalarySlipReport {
+  id              String              @id @default(uuid())
+  employeeId      String
+  employee        Employee            @relation(fields: [employeeId], references: [id])
+  date            DateTime
+  salarySlipId    String              @unique
+  salarySlip      SalarySlip          @relation(fields: [salarySlipId], references: [id])
+  createdAt       DateTime            @default(now())
+
+  @@unique([employeeId, date])
+}
+
+
+enum Education {
+  SD
+  SMP
+  SMA
+  SMK
+  MA
+  MTS
+  D3
+  S1
+  S2
+  S3
+}
+
+enum Role {
+  KepsekSDTQ
+  Kepsek
+  GuruSDTQ
+  GuruSMPTQ
+  GuruSMA
+  GuruTerbang
+  Chef
+  Cleaner
+  Morobbi
+  Laundry
+  Admin
+  FO
+  Sekretaris
+  Keuangan
+  KetuaYayasan
+  Maintenance
+  Musyrif
+}
