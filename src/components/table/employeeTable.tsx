@@ -117,14 +117,8 @@ export default function EmployeeTable({ employee = {}, type = "look" }: Props) {
           )}
           {type === "add employee" && (
             <Button
-              onClick={() => {
-                const action = addEmployee(form);
-                actionToast(addEmployee(form));
-                action.then((e) => {
-                  if (!e) {
-                    handleCancel();
-                  }
-                });
+              onClick={async () => {
+                (await actionToast(addEmployee(form))) ? handleCancel() : false;
               }}
             >
               Add Employee

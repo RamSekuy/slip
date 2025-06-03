@@ -2,9 +2,11 @@
 
 import { SalarySlip } from "@/lib/generated/prisma";
 import prisma from "@/lib/prisma";
+import prismaErrorCodeHandler from "@/lib/prismaErrorCodeHandler";
 import zodErrorHandler from "@/lib/zodErrorHandler";
 import { revalidatePath } from "next/cache";
 import { z, ZodError } from "zod";
+import actionErrorHandler from "./actionErrorHandler";
 
 const salarySlipUpdateSchema = z.object({
   gajiPokok: z.number().optional(),
@@ -47,8 +49,6 @@ export async function updateSalarySlip(
     revalidatePath("/salary-slip-report");
     revalidatePath("/");
   } catch (error) {
-    console.log(error);
-    if (error instanceof ZodError) return new Error(zodErrorHandler(error));
-    if (error instanceof Error) return error;
+    return actionErrorHandler(error);
   }
 }

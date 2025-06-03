@@ -1,6 +1,4 @@
-import zodErrorHandler from "@/lib/zodErrorHandler";
 import { toast } from "sonner";
-import { ZodError } from "zod";
 type Props = {
   loading?: string;
   success?: string;
@@ -10,39 +8,35 @@ type Props = {
 const defaultProps: Props = {
   loading: "Loading...",
   success: "Success!",
-  error: "An error occurred",
+  error: (err) => {
+    return err.message;
+  },
 };
 const style = { backgroundColor: "red", color: "white" };
 export default async function actionToast(
-  action: Promise<void | Error>,
+  action: Promise<void | Error | string>,
   { loading, success, error }: Props = defaultProps
 ) {
   toast.promise(action, {
     loading: loading,
     success: (res) => {
-      console.log(res instanceof ZodError);
-      if (res instanceof ZodError) {
-        return {
-          message: zodErrorHandler(res),
-          style,
-        };
-      }
-      if (res instanceof Error) {
-        if (typeof error == "function") return { message: error(res), style };
+      if (res !== undefined) {
+        if (typeof error == "function")
+          return {
+            message: typeof res == "string" ? res : error(res),
+            style,
+          };
         else return { message: error, style };
       } else {
         return { message: success };
       }
     },
     error: (err) => {
-      console.log("error", err instanceof ZodError);
-      if (err instanceof ZodError) {
-        return {
-          message: zodErrorHandler(err),
-          style,
-        };
-      } else if (err instanceof Error && err.message) {
-        console.error(err.message);
+      if (err instanceof Error) {
+        console.error("[ERROR]: ", err.message);
+        if ("code" in err) {
+          return { message: String(err.code), style };
+        }
         return { message: err.message, style };
       } else
         return {
@@ -51,8 +45,5 @@ export default async function actionToast(
         };
     },
   });
-  action.catch((e) => {
-    throw new Error("Action Fail");
-  });
-  return true;
+  if ((await action) == undefined) return true;
 }
