@@ -2,7 +2,7 @@ import { toast } from "sonner";
 type Props = {
   loading?: string;
   success?: string;
-  error: string | ((error: Error) => string);
+  error?: string | ((error: Error) => string);
 };
 
 const defaultProps: Props = {
@@ -15,8 +15,9 @@ const defaultProps: Props = {
 const style = { backgroundColor: "red", color: "white" };
 export default async function actionToast(
   action: Promise<void | Error | string>,
-  { loading, success, error }: Props = defaultProps
+  options?: Props
 ) {
+  const { loading, success, error }: Props = { ...defaultProps, ...options };
   toast.promise(action, {
     loading: loading,
     success: (res) => {

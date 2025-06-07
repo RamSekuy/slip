@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { SalarySlipReportExtend } from "@/type/prismaExtend";
 import SalarySlipTable from "@/components/table/salarySlipTable";
@@ -11,6 +10,10 @@ import MonthlySelector from "../input/monthlySelector";
 import { useSearchParams } from "next/navigation";
 import { Card, CardContent } from "../ui/card";
 import { Checkbox } from "../ui/checkbox";
+import actionToast from "../actionToast";
+import { sendMail } from "@/action/sendMail";
+import { DialogClose, DialogTrigger } from "../ui/dialog";
+import { deleteReport } from "@/action/deleteReport";
 
 type Props = {
   data: SalarySlipReportExtend[];
@@ -84,7 +87,6 @@ export default function SlipReportTable({ data }: Props) {
       <DataTable
         renderTop={(table) => {
           const selecteds = table.getSelectedRowModel();
-          console.log(selecteds.rows);
           return (
             <div className="mb-2 flex w-full justify-evenly">
               <Input
@@ -99,9 +101,46 @@ export default function SlipReportTable({ data }: Props) {
               <MonthlySelector
                 value={date ? new Date(Number(sp.get("date"))) : new Date()}
               />
-              <Button disabled={selecteds.rows.length < 1}>
-                Send to Email
-              </Button>
+              {window && (
+                <Button
+                  disabled={selecteds.rows.length < 1}
+                  onClick={async () => {
+                    const url =
+                      window.location.origin + window.location.pathname;
+                    const targets = selecteds.rows.map((row: any) => ({
+                      email: row.original.employee.email as string,
+                      slipUrl: `${url}/${row.original.id}`,
+                    }));
+                    await actionToast(sendMail(...targets), {
+                      loading: "Sending Email...",
+                    });
+                  }}
+                >
+                  Send to Email
+                </Button>
+              )}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant={"destructive"}></Button>
+                </DialogTrigger>
+                <DialogContent className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] rounded-lg bg-[#eaeaea] border-black border-2 p-4 shadow-lg shadow-black/50">
+                  <DialogTitle hidden>deletee confirmation</DialogTitle>
+                  <h1>Are you sure you want to delete selected data?</h1>
+                  <DialogClose asChild>
+                    <Button
+                      variant={"destructive"}
+                      onClick={() => {
+                        actionToast(
+                          deleteReport(Object.keys(selecteds.rowsById)),
+                          { loading: "Deleting..." }
+                        );
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </DialogClose>
+                </DialogContent>
+              </Dialog>
             </div>
           );
         }}
