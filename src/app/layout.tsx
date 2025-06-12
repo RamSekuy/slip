@@ -17,6 +17,7 @@ import EachUtils from "@/components/utils/eachUtils";
 import { Suspense } from "react";
 import { Loader2 } from "lucide-react";
 import { Toaster } from "@/components/ui/sonner";
+import Image from "next/image";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -96,11 +97,9 @@ export default function RootLayout({
             </SidebarContent>
           </Sidebar>
           <main className="w-full min-h-screen">
-            <nav className="sticky w-full">
+            <nav className="sticky w-full aspect-[6.6/1] mb-8">
               <SidebarTrigger className="fixed" />
-              <h1 className="text-center text-2xl font-semibold my-4">
-                DASHBOARD
-              </h1>
+              <Image alt="" src="/kop.png" fill />
             </nav>
             <Suspense
               fallback={
@@ -113,7 +112,7 @@ export default function RootLayout({
             </Suspense>
           </main>
         </SidebarProvider>
-         <Toaster />
+        <Toaster />
       </body>
     </html>
   );

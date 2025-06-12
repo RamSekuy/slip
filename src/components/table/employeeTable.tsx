@@ -4,11 +4,11 @@ import { EmployeeExtend } from "@/type/prismaExtend";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Employee } from "@/lib/generated/prisma";
 import { addEmployee, updateEmployee } from "@/action/employee";
 import Selector from "../input/Selector";
 import actionToast from "@/components/actionToast";
 import { roles, education } from "@/type/enum";
+import { Employee } from "@/lib/generated/prisma";
 
 type Props = {
   employee?: Employee | Partial<Employee>;
@@ -18,7 +18,8 @@ type Props = {
 const defaultEmployee: Employee = {
   id: "",
   name: "",
-  email: "",
+  phoneNumber: "",
+  niy: "",
   role: "Admin",
   lastEducation: "",
   defaultSalaryId: "",
@@ -32,10 +33,8 @@ export default function EmployeeTable({ employee = {}, type = "look" }: Props) {
     ...employee,
   });
 
-  // Reset ke props awal
   const handleCancel = () => setForm({ ...defaultEmployee, ...employee });
 
-  // Handler untuk input
   const handleChange = (key: keyof EmployeeExtend, value: string) => {
     setForm((prev) => ({
       ...prev,
@@ -61,14 +60,14 @@ export default function EmployeeTable({ employee = {}, type = "look" }: Props) {
             </TableCell>
           </TableRow>
           <TableRow>
-            <TableCell className="font-bold pr-4">Email</TableCell>
+            <TableCell className="font-bold pr-4">PhoneNumber</TableCell>
             <TableCell>
               {type === "look" ? (
-                form.email
+                form.phoneNumber
               ) : (
                 <Input
-                  value={form.email}
-                  onChange={(e) => handleChange("email", e.target.value)}
+                  value={form.phoneNumber}
+                  onChange={(e) => handleChange("phoneNumber", e.target.value)}
                 />
               )}
             </TableCell>

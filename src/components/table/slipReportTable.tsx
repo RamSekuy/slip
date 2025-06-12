@@ -14,6 +14,7 @@ import actionToast from "../actionToast";
 import { sendMail } from "@/action/sendMail";
 import { DialogClose, DialogTrigger } from "../ui/dialog";
 import { deleteReport } from "@/action/deleteReport";
+import Link from "next/link";
 
 type Props = {
   data: SalarySlipReportExtend[];
@@ -24,7 +25,6 @@ export default function SlipReportTable({ data }: Props) {
   const sp = useSearchParams();
   const [selectedSlip, setSelectedSlip] =
     useState<SalarySlipReportExtend | null>(null);
-  const date = sp.get("date");
   const columns = [
     {
       accessorKey: "id",
@@ -69,7 +69,11 @@ export default function SlipReportTable({ data }: Props) {
       id: "action",
       header: () => <div className="flex justify-end pr-8">Action</div>,
       cell: (ctx: any) => (
-        <div className="flex justify-end pr-4">
+        <div className="flex justify-end pr-4 gap-4">
+          <Link href={"/salary-slip-report/" + ctx.row.original.id}>
+            <Button>Download PDF</Button>
+          </Link>
+
           <Button
             onClick={() => {
               setSelectedSlip(ctx.row.original);
@@ -87,6 +91,7 @@ export default function SlipReportTable({ data }: Props) {
       <DataTable
         renderTop={(table) => {
           const selecteds = table.getSelectedRowModel();
+          const date = sp.get("date");
           return (
             <div className="mb-2 flex w-full justify-evenly">
               <Input
@@ -99,7 +104,7 @@ export default function SlipReportTable({ data }: Props) {
                 }
               />
               <MonthlySelector
-                value={date ? new Date(Number(sp.get("date"))) : new Date()}
+                value={date ? new Date(Number(date)) : new Date()}
               />
               {window && (
                 <Button
@@ -121,10 +126,15 @@ export default function SlipReportTable({ data }: Props) {
               )}
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button variant={"destructive"}></Button>
+                  <Button
+                    variant={"destructive"}
+                    disabled={selecteds.rows.length < 1}
+                  >
+                    DELETE
+                  </Button>
                 </DialogTrigger>
                 <DialogContent className="fixed top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] rounded-lg bg-[#eaeaea] border-black border-2 p-4 shadow-lg shadow-black/50">
-                  <DialogTitle hidden>deletee confirmation</DialogTitle>
+                  <DialogTitle hidden>delete confirmation</DialogTitle>
                   <h1>Are you sure you want to delete selected data?</h1>
                   <DialogClose asChild>
                     <Button

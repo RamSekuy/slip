@@ -123,7 +123,8 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
 exports.Prisma.EmployeeScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  email: 'email',
+  phoneNumber: 'phoneNumber',
+  niy: 'niy',
   role: 'role',
   lastEducation: 'lastEducation',
   updatedAt: 'updatedAt',
@@ -195,7 +196,13 @@ exports.Role = exports.$Enums.Role = {
   Keuangan: 'Keuangan',
   KetuaYayasan: 'KetuaYayasan',
   Maintenance: 'Maintenance',
-  Musyrif: 'Musyrif'
+  Musyrif: 'Musyrif',
+  Mudir: 'Mudir',
+  KetuaTahfidz: 'KetuaTahfidz',
+  Keamanan: 'Keamanan',
+  Pengabdians: 'Pengabdians',
+  Operator: 'Operator',
+  Media: 'Media'
 };
 
 exports.Prisma.ModelName = {

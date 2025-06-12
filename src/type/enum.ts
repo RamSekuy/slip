@@ -16,6 +16,23 @@ export const roles = [
   "KetuaYayasan",
   "Maintenance",
   "Musyrif",
+  "Mudir",
+  "KetuaTahfidz",
+  "Keamanan",
+  "Pengabdians",
+  "Operator",
+  "Media",
 ];
 
-export const education = ["SD", "SMP", "SMA", "SMK", "D3", "S1", "S2", "S3"];
+export const education = [
+  "SD",
+  "SMP",
+  "SMA",
+  "SMK",
+  "MA",
+  "MTS",
+  "D3",
+  "S1",
+  "S2",
+  "S3",
+];

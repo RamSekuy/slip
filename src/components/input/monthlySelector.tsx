@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import EachUtils from "../utils/eachUtils";
 import { SelectTrigger } from "@radix-ui/react-select";
 import { Button } from "../ui/button";
+import { useState } from "react";
 
 const months = [
   { value: "0", label: "Januari" },
@@ -48,6 +49,8 @@ export default function MonthlySelector({
   const month = date.getMonth();
   const year = date.getFullYear();
 
+  const [yearInput, setYearInput] = useState(year.toString());
+
   const handleMonthChange = onMonthChange
     ? onMonthChange
     : (value: string) => {
@@ -59,9 +62,12 @@ export default function MonthlySelector({
   const handleYearChange = onYearChange
     ? onYearChange
     : (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newDate = new Date(date);
-        newDate.setFullYear(Number(e.target.value));
-        replace({ key: "date", value: newDate.getTime().toString() });
+        setYearInput(e.target.value);
+        if (e.target.value.length === 4) {
+          const newDate = new Date(date);
+          newDate.setFullYear(Number(e.target.value));
+          replace({ key: "date", value: newDate.getTime().toString() });
+        }
       };
 
   return (
@@ -87,7 +93,7 @@ export default function MonthlySelector({
       </Select>
       <Input
         type="number"
-        value={year}
+        value={yearInput}
         min={2000}
         max={2100}
         onChange={handleYearChange}

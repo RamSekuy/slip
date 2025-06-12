@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../lib/generated/prisma"
+  output   = "../src/lib/generated/prisma"
 }
 
 datasource db {
@@ -18,7 +18,8 @@ datasource db {
 model Employee {
   id              String             @id @default(uuid())
   name            String
-  email           String             @unique
+  phoneNumber     String             @unique
+  niy             String             @unique
   role            Role
   lastEducation   String
   updatedAt       DateTime           @updatedAt
@@ -104,4 +105,10 @@ enum Role {
   KetuaYayasan
   Maintenance
   Musyrif
+  Mudir
+  KetuaTahfidz
+  Keamanan
+  Pengabdians
+  Operator
+  Media
 }

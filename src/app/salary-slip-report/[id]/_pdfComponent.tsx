@@ -139,7 +139,8 @@ const PDFComponent = async ({
     .filter(Boolean);
 
   const pokok = salarySlip.gajiPokok + salarySlip.masaKerja;
-  const total = rows.reduce((acc, row) => acc + (row ? row.value : 0), 0);
+  const total =
+    rows.reduce((acc, row) => acc + (row ? row.value : 0), 0) + pokok;
 
   return (
     <Document title={`Slip Gaji ${monthYear}`}>
